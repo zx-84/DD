@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Mine Oubliee de Phancreux</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero__veil"></div>
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand__glyph">D20</div>
+          <div>
+            <p class="eyebrow">Donjons &amp; Dragons</p>
+            <h1>La Mine Oubliee de Phancreux</h1>
+          </div>
+        </div>
+        <div class="topbar__actions">
+          <button class="primary-button" id="boost-table" type="button">Rebooster la table</button>
+        </div>
+      </div>
+      <div class="hero__content">
+        <div class="hero__text">
+          <p class="eyebrow">Ecran de campagne interactif</p>
+          <h2>Cartes, bestiaire, journal et outils MJ reunis dans un meme grimoire.</h2>
+          <p>Suivez la progression et gardez sous la main les infos utiles de l'aventure.</p>
+          <div class="hero__chips">
+            <span>Assistant IA</span>
+            <span>Cartes interactives</span>
+            <span>Bestiaire de bataille</span>
+            <span>Suivi EXP et ressources</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content-grid">
+      <section class="panel panel--wide">
+        <div class="section-heading section-heading--split">
+          <div>
+            <p class="eyebrow">Navigation</p>
+            <h2>Onglets de campagne</h2>
+          </div>
+          <div class="tab-controls">
+            <button class="tab-button active" type="button" data-tab="mj-space">Espace MJ</button>
+            <button class="tab-button" type="button" data-tab="combat-space">Combat</button>
+            <button class="tab-button" type="button" data-tab="inventory-space">Inventaire</button>
+          </div>
+        </div>
+
+        <div class="tab-panel active" id="mj-space">
+          <div class="two-column">
+            <article class="subpanel">
+              <div class="section-heading">
+                <p class="eyebrow">Assistant</p>
+                <h2>Ouvrir ChatGPT</h2>
+              </div>
+              <p>Pour poser des questions libres sur l'aventure, les regles ou les idees de scene, ouvrez ChatGPT dans un nouvel onglet.</p>
+              <div class="inline-actions">
+                <button class="primary-button" id="open-chatgpt-button" type="button">Aller sur chatgpt.com</button>
+              </div>
+              <p class="hint" id="chatgpt-launch-status">Le prompt sera copie avant l'ouverture.</p>
+            </article>
+
+            <article class="subpanel">
+              <div class="section-heading">
+                <p class="eyebrow">Gestion MJ</p>
+                <h2>Pense-betes du MJ</h2>
+              </div>
+              <textarea id="gm-notes" rows="12" placeholder="Notes de scene, improvisations, rappels de PNJ, consequences des choix..."></textarea>
+              <div class="inline-actions">
+                <button class="primary-button" id="save-notes" type="button">Sauvegarder</button>
+                <button class="ghost-button" id="clear-notes" type="button">Effacer</button>
+                <span id="notes-status"></span>
+              </div>
+            </article>
+          </div>
+
+          <div class="two-column" style="margin-top: 18px;">
+
+            <article class="subpanel">
+              <div class="section-heading">
+                <p class="eyebrow">Journal</p>
+                <h2>Journal des aventures</h2>
+              </div>
+              <form id="journal-form">
+                <label for="journal-title">Titre</label>
+                <input id="journal-title" type="text" placeholder="Session 4 - Manoir de Tresendar">
+                <label for="journal-entry">Resume</label>
+                <textarea id="journal-entry" rows="6" placeholder="Ce que le groupe a fait, appris, gagne ou rate..."></textarea>
+                <div class="inline-actions">
+                  <button class="primary-button" type="submit">Ajouter au journal</button>
+                </div>
+              </form>
+              <div class="journal-list" id="journal-list"></div>
+            </article>
+
+          </div>
+        </div>
+        <div class="tab-panel" id="combat-space">
+          <div class="combat-grid">
+            <article class="subpanel">
+              <div class="section-heading">
+                <p class="eyebrow">Equipe</p>
+                <h2>Noms et PV des joueurs</h2>
+              </div>
+              <div class="player-health-list" id="player-health-list"></div>
+              <div class="inline-actions">
+                <button class="ghost-button" id="short-rest" type="button">Repos court</button>
+                <button class="ghost-button" id="long-rest" type="button">Repos long</button>
+              </div>
+              <div class="section-heading" style="margin-top: 18px;">
+                <p class="eyebrow">Combattants actifs</p>
+                <h2>Vue simplifiee du combat sans carte tactique</h2>
+              </div>
+              <div class="combat-summary battle-legend" id="combat-summary"></div>
+              <div class="combat-roster" id="combat-roster"></div>
+            </article>
+          </div>
+
+          <div class="combat-grid combat-grid--large">
+            <article class="subpanel">
+              <div class="section-heading section-heading--split">
+                <div>
+                  <p class="eyebrow">Bestiaire</p>
+                  <h2>Bestiaire de bataille</h2>
+                </div>
+                <button class="ghost-button spell-toggle" id="toggle-bestiary" type="button" aria-expanded="true">v Afficher / masquer</button>
+              </div>
+              <div id="bestiary-panel-body">
+                <label for="monster-search">Recherche</label>
+                <input id="monster-search" type="search" placeholder="Gobelin, Venomfang, mort-vivant...">
+                <div class="bestiary-filters">
+                  <label for="monster-type-filter">Type
+                    <select id="monster-type-filter">
+                      <option value="">Tous les types</option>
+                      <option value="Humanoide">Humanoide</option>
+                      <option value="Mort-vivant">Mort-vivant</option>
+                      <option value="Dragon">Dragon</option>
+                      <option value="Aberration">Aberration</option>
+                      <option value="Bete / Monstruosite">Bete / Monstruosite</option>
+                      <option value="Plante">Plante</option>
+                      <option value="Fiellon">Fiellon</option>
+                      <option value="Lanceur de sorts">Lanceur de sorts</option>
+                      <option value="Autre">Autre</option>
+                    </select>
+                  </label>
+                  <label for="monster-danger-filter">Danger
+                    <select id="monster-danger-filter">
+                      <option value="">Tous les dangers</option>
+                      <option value="Faible">Faible</option>
+                      <option value="Moyen">Moyen</option>
+                      <option value="Eleve">Eleve</option>
+                      <option value="Boss">Boss</option>
+                    </select>
+                  </label>
+                  <label for="monster-zone-filter">Zone
+                    <select id="monster-zone-filter">
+                      <option value="">Toutes les zones</option>
+                      <option value="Cragmaw">Cragmaw</option>
+                      <option value="Phandaline">Phandaline</option>
+                      <option value="Thundertree">Thundertree</option>
+                      <option value="Mine">Mine</option>
+                      <option value="Rencontre">Rencontre</option>
+                      <option value="Rare / optionnel">Rare / optionnel</option>
+                      <option value="Divers">Divers</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="inline-actions" style="margin-top: 12px;">
+                  <select id="battle-monster-select"></select>
+                  <button class="ghost-button" id="add-monster-to-map" type="button">Ajouter au combat</button>
+                </div>
+                <div class="monster-list" id="monster-list"></div>
+              </div>
+            </article>
+
+
+
+            <article class="subpanel">
+              <div class="section-heading section-heading--split">
+                <div>
+                  <p class="eyebrow">Magie</p>
+                  <h2>Sorts et emplacements</h2>
+                </div>
+                <button class="ghost-button spell-toggle" id="toggle-spells" type="button" aria-expanded="true">v Afficher / masquer</button>
+              </div>
+              <div id="spell-panel-body">
+                <div class="slot-board" id="slot-board"></div>
+                <label for="spell-search">Recherche de sorts</label>
+                <input id="spell-search" type="search" placeholder="Projectile magique, Bouclier, Toile...">
+                <div class="spell-list" id="spell-list"></div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+                        <div class="tab-panel" id="inventory-space">
+          <div class="two-column">
+            <article class="subpanel">
+              <div class="section-heading">
+                <p class="eyebrow">Progression</p>
+                <h2>EXP du groupe</h2>
+              </div>
+              <div class="xp-panel" id="xp-panel"></div>
+              <div class="subpanel" style="margin-top: 14px;">
+                <h3>Niveau des joueurs</h3>
+                <div class="xp-panel" id="inventory-level-summary"></div>
+              </div>
+              <div class="section-heading" style="margin-top: 18px;">
+                <p class="eyebrow">Equipe</p>
+                <h2>Noms et PV des joueurs</h2>
+              </div>
+              <div class="player-name-editor" id="inventory-player-name-editor"></div>
+              <div class="player-health-list" id="inventory-player-health-list"></div>
+              <div class="section-heading" style="margin-top: 18px;">
+                <p class="eyebrow">Monnaie</p>
+                <h2>Bourse du groupe</h2>
+              </div>
+              <div class="resource-list" id="currency-list"></div>
+              <div class="section-heading" style="margin-top: 18px;">
+                <p class="eyebrow">Objets</p>
+                <h2>Ajouter a l'inventaire</h2>
+              </div>
+              <form id="inventory-item-form">
+                <label for="inventory-item-name">Nom de l'objet</label>
+                <input id="inventory-item-name" type="text" placeholder="Potion de soin, corde, cle...">
+                <div class="player-grid-meta">
+                  <label>Quantite<input id="inventory-item-qty" type="number" min="1" value="1"></label>
+                  <label>Valeur<input id="inventory-item-value" type="text" placeholder="25 PO"></label>
+                </div>
+                <div class="inline-actions">
+                  <button class="primary-button" type="submit">Ajouter l'objet</button>
+                </div>
+              </form>
+              <div class="journal-list" id="inventory-item-list"></div>
+            </article>
+
+            <article class="subpanel">
+              <div class="section-heading section-heading--split">
+                <div>
+                  <p class="eyebrow">Ressources</p>
+                  <h2>Ressources du groupe</h2>
+                </div>
+                <button class="ghost-button" id="reset-resources" type="button">Reinitialiser</button>
+              </div>
+              <div class="resource-list" id="resource-list"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="boost-modal">
+    <div class="modal__backdrop" data-close-modal></div>
+    <div class="modal__content">
+      <button class="modal__close" type="button" data-close-modal>&times;</button>
+      <p class="eyebrow">Relancer l'energie</p>
+      <h3>Rebooster la table</h3>
+      <p id="boost-text">Une idee de relance apparaitra ici.</p>
+      <div class="inline-actions">
+        <button class="primary-button" id="reroll-boost" type="button">Nouvelle idee</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
